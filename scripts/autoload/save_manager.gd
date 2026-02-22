@@ -44,11 +44,7 @@ func load_game() -> void:
 		return
 	var data: Dictionary = json.data
 	GameManager.load_save_data(data)
-
-	# Calculate and apply offline earnings
-	var offline_cds := GameManager.calculate_offline_earnings()
-	if offline_cds > 0:
-		GameManager.add_cds(offline_cds)
+	# Note: offline earnings are handled by the welcome back popup in main_screen.gd
 
 func delete_save() -> void:
 	if FileAccess.file_exists(SAVE_PATH):

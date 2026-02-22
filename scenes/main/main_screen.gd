@@ -23,6 +23,13 @@ func _check_daily_login() -> void:
 		var popup := daily_popup_scene.instantiate()
 		popup.setup(login_result["streak"])
 		add_child(popup)
+	# Show welcome back popup if there are offline earnings
+	var offline_cds := GameManager.calculate_offline_earnings()
+	if offline_cds > 100:  # Only show if meaningful amount
+		var wb_scene := preload("res://scenes/ui/welcome_back_popup.tscn")
+		var wb_popup := wb_scene.instantiate()
+		wb_popup.setup(offline_cds)
+		add_child(wb_popup)
 
 func _process(delta: float) -> void:
 	_spawn_timer += delta

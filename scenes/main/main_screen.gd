@@ -12,6 +12,17 @@ var _cd_scene: PackedScene
 func _ready() -> void:
 	_cd_scene = preload("res://scenes/main/cd_pickup.tscn")
 	nav_bar.screen_requested.connect(_on_screen_requested)
+	_check_daily_login()
+
+func _check_daily_login() -> void:
+	var daily_popup_scene := preload("res://scenes/ui/daily_login_popup.tscn")
+	# Check daily login after a short delay (let save load first)
+	await get_tree().create_timer(0.5).timeout
+	var login_result := GameManager.check_daily_login()
+	if login_result["is_new_day"]:
+		var popup := daily_popup_scene.instantiate()
+		popup.setup(login_result["streak"])
+		add_child(popup)
 
 func _process(delta: float) -> void:
 	_spawn_timer += delta

@@ -1,0 +1,25 @@
+# API keys - NEVER commit
+.env
+*.key
+
+# Cost tracking logs (local only)
+tools/*_costs.json
+
+# Godot generated
+.godot/
+*.import
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Export builds
+*.apk
+*.aab
+*.exe
+*.x86_64
+*.pck
+export/
+
+# Debug keystore
+debug.keystore

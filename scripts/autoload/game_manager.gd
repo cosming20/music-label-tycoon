@@ -119,12 +119,13 @@ func upgrade_artist(tier: int) -> bool:
 func get_total_production() -> float:
 	var total := 0.0
 	for tier in artists_owned:
-		var count: int = artists_owned[tier]
-		var level: int = artist_levels.get(tier, 0)
-		var per_artist := ArtistData.production_at_level(tier, level)
+		var t: int = int(tier)
+		var count: int = int(artists_owned[tier])
+		var level: int = int(artist_levels.get(t, 0))
+		var per_artist := ArtistData.production_at_level(t, level)
 		total += per_artist * count
 	# Apply studio Recording Quality bonus
-	var quality_level: int = studio_upgrades.get(UpgradeData.UpgradeId.RECORDING_QUALITY, 0)
+	var quality_level: int = int(studio_upgrades.get(UpgradeData.UpgradeId.RECORDING_QUALITY, 0))
 	var quality_bonus := 1.0 + (quality_level * UpgradeData.UPGRADES[UpgradeData.UpgradeId.RECORDING_QUALITY]["effect_per_level"])
 	return total * quality_bonus
 
@@ -176,7 +177,7 @@ func calculate_offline_earnings() -> float:
 
 func check_daily_login() -> Dictionary:
 	var today := Time.get_date_dict_from_system()
-	var day_of_year := today["day"] + today["month"] * 31  # Simple unique day ID
+	var day_of_year: int = int(today["day"]) + int(today["month"]) * 31  # Simple unique day ID
 	if day_of_year == last_login_day:
 		return {"is_new_day": false, "streak": login_streak}
 	if day_of_year == last_login_day + 1 or last_login_day == -1:
@@ -211,13 +212,21 @@ func to_save_data() -> Dictionary:
 func load_save_data(data: Dictionary) -> void:
 	cds = data.get("cds", 0.0)
 	total_cds_earned = data.get("total_cds_earned", 0.0)
-	artists_owned = data.get("artists_owned", {})
-	artist_levels = data.get("artist_levels", {})
-	studio_upgrades = data.get("studio_upgrades", {})
-	login_streak = data.get("login_streak", 0)
-	last_login_day = data.get("last_login_day", -1)
-	gacha_pity_counter = data.get("gacha_pity_counter", 0)
+	artists_owned = _parse_int_dict(data.get("artists_owned", {}))
+	artist_levels = _parse_int_dict(data.get("artist_levels", {}))
+	studio_upgrades = _parse_int_dict(data.get("studio_upgrades", {}))
+	login_streak = int(data.get("login_streak", 0))
+	last_login_day = int(data.get("last_login_day", -1))
+	gacha_pity_counter = int(data.get("gacha_pity_counter", 0))
 	last_spin_time = data.get("last_spin_time", 0.0)
 	last_save_timestamp = data.get("timestamp", 0.0)
 	cds_changed.emit(cds)
 	game_loaded.emit()
+
+## JSON loses int types — keys become String, values become float.
+## This converts them back to {int: int}.
+func _parse_int_dict(raw: Dictionary) -> Dictionary:
+	var result: Dictionary = {}
+	for key in raw:
+		result[int(key)] = int(raw[key])
+	return result

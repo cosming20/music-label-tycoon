@@ -17,9 +17,9 @@ const TIERS: Dictionary = {
 	ArtistTier.BUSKER: {
 		"name": "Street Busker",
 		"base_cost": 50.0,
-		"base_production": 1.0,  # CDs per second
-		"unlock_threshold": 0.0,  # Total CDs earned to unlock
-		"color": Color.SANDY_BROWN,
+		"base_production": 1.0,
+		"unlock_threshold": 0.0,
+		"sprite": "res://assets/sprites/artists/artist_busker.png",
 		"description": "A humble street performer",
 	},
 	ArtistTier.GARAGE_BAND: {
@@ -27,7 +27,7 @@ const TIERS: Dictionary = {
 		"base_cost": 500.0,
 		"base_production": 8.0,
 		"unlock_threshold": 200.0,
-		"color": Color.SLATE_BLUE,
+		"sprite": "res://assets/sprites/artists/artist_garage_band.png",
 		"description": "A scrappy garage rock outfit",
 	},
 	ArtistTier.INDIE_ARTIST: {
@@ -35,7 +35,7 @@ const TIERS: Dictionary = {
 		"base_cost": 5000.0,
 		"base_production": 50.0,
 		"unlock_threshold": 5000.0,
-		"color": Color.MEDIUM_PURPLE,
+		"sprite": "res://assets/sprites/artists/artist_indie.png",
 		"description": "A rising indie sensation",
 	},
 	ArtistTier.STUDIO_PRO: {
@@ -43,7 +43,7 @@ const TIERS: Dictionary = {
 		"base_cost": 50000.0,
 		"base_production": 400.0,
 		"unlock_threshold": 50000.0,
-		"color": Color.ORANGE_RED,
+		"sprite": "res://assets/sprites/artists/artist_studio_pro.png",
 		"description": "A seasoned studio professional",
 	},
 	ArtistTier.CHART_TOPPER: {
@@ -51,7 +51,7 @@ const TIERS: Dictionary = {
 		"base_cost": 500000.0,
 		"base_production": 3500.0,
 		"unlock_threshold": 500000.0,
-		"color": Color.HOT_PINK,
+		"sprite": "res://assets/sprites/artists/artist_chart_topper.png",
 		"description": "A chart-dominating hitmaker",
 	},
 	ArtistTier.SUPERSTAR: {
@@ -59,7 +59,7 @@ const TIERS: Dictionary = {
 		"base_cost": 5000000.0,
 		"base_production": 30000.0,
 		"unlock_threshold": 5000000.0,
-		"color": Color.GOLD,
+		"sprite": "res://assets/sprites/artists/artist_superstar.png",
 		"description": "A global music superstar",
 	},
 	ArtistTier.LEGEND: {
@@ -67,7 +67,7 @@ const TIERS: Dictionary = {
 		"base_cost": 50000000.0,
 		"base_production": 250000.0,
 		"unlock_threshold": 50000000.0,
-		"color": Color.DARK_VIOLET,
+		"sprite": "res://assets/sprites/artists/artist_legend.png",
 		"description": "An immortal music legend",
 	},
 }

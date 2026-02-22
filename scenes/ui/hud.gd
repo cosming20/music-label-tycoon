@@ -2,12 +2,16 @@ extends PanelContainer
 
 ## Top HUD bar showing CD count, production rate, and boost status.
 
+const BMC_URL := "https://buymeacoffee.com/cosming20"
+
 @onready var cd_count_label: Label = %CdCountLabel
 @onready var production_label: Label = %ProductionLabel
 @onready var boost_label: Label = %BoostLabel
+@onready var support_button: Button = %SupportButton
 
 func _ready() -> void:
 	GameManager.cds_changed.connect(_on_cds_changed)
+	support_button.pressed.connect(_on_support_pressed)
 	_update_display()
 
 func _process(_delta: float) -> void:
@@ -28,3 +32,6 @@ func _on_cds_changed(new_amount: float) -> void:
 
 func _update_display() -> void:
 	cd_count_label.text = GameConfig.format_number(GameManager.cds)
+
+func _on_support_pressed() -> void:
+	OS.shell_open(BMC_URL)

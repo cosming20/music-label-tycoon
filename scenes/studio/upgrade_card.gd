@@ -10,7 +10,7 @@ var _upgrade_id: int
 @onready var desc_label: Label = %DescLabel
 @onready var level_label: Label = %LevelLabel
 @onready var buy_button: Button = %BuyButton
-@onready var icon_rect: ColorRect = %IconRect
+@onready var icon_rect: TextureRect = %IconRect
 
 func setup(upgrade_id: int) -> void:
 	_upgrade_id = upgrade_id
@@ -28,7 +28,9 @@ func _update_display() -> void:
 
 	name_label.text = data["name"]
 	desc_label.text = data["description"]
-	icon_rect.color = data["icon_color"]
+	var sprite_path: String = data.get("sprite", "")
+	if sprite_path != "":
+		icon_rect.texture = load(sprite_path)
 
 	if level >= max_level:
 		level_label.text = "MAX (Lv. %d)" % level

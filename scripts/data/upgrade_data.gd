@@ -15,8 +15,8 @@ const UPGRADES: Dictionary = {
 		"base_cost": 100.0,
 		"cost_growth": 1.5,
 		"max_level": 50,
-		"effect_per_level": 0.05,  # 5% production boost
-		"icon_color": Color.RED,
+		"effect_per_level": 0.05,
+		"sprite": "res://assets/sprites/studio/icon_recording_quality.png",
 	},
 	UpgradeId.MARKETING_REACH: {
 		"name": "Marketing Reach",
@@ -24,8 +24,8 @@ const UPGRADES: Dictionary = {
 		"base_cost": 200.0,
 		"cost_growth": 1.5,
 		"max_level": 50,
-		"effect_per_level": 0.03,  # 3% shift toward higher tiers
-		"icon_color": Color.BLUE,
+		"effect_per_level": 0.03,
+		"sprite": "res://assets/sprites/studio/icon_marketing_reach.png",
 	},
 }
 

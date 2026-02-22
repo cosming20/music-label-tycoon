@@ -2,13 +2,13 @@ extends Control
 
 ## A tappable CD that appears on the main screen.
 
-signal collected(tier: int)
+signal collected(tier: int, pos: Vector2)
 
 var _tier: int = CdData.CdTier.DEMO
 var _lifetime: float = 0.0
 var _bob_offset: float = 0.0
 
-@onready var sprite: ColorRect = %Sprite
+@onready var sprite: TextureRect = %Sprite
 @onready var label: Label = %ValueLabel
 
 func setup(tier: int) -> void:
@@ -19,7 +19,7 @@ func _ready() -> void:
 	add_to_group("cd_pickup")
 	# Apply tier visuals
 	var tier_data: Dictionary = CdData.TIERS[_tier]
-	sprite.color = tier_data["color"]
+	sprite.texture = load(tier_data["sprite"])
 	label.text = GameConfig.format_number(tier_data["value"])
 	# Scale based on tier
 	var base_scale := 0.8 + (_tier * 0.1)
@@ -34,8 +34,13 @@ func _process(delta: float) -> void:
 		_fade_and_remove()
 
 func _gui_input(event: InputEvent) -> void:
+	var tapped := false
 	if event is InputEventScreenTouch and event.pressed:
-		collected.emit(_tier)
+		tapped = true
+	elif event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		tapped = true
+	if tapped:
+		collected.emit(_tier, position)
 		_collect_animation()
 
 func _collect_animation() -> void:

@@ -81,9 +81,27 @@ func _pick_weighted_tier() -> int:
 			return tier_id
 	return last_tier
 
-func _on_cd_collected(tier: int) -> void:
+func _on_cd_collected(tier: int, pos: Vector2) -> void:
 	var value: float = CdData.TIERS[tier]["value"]
 	GameManager.add_cds(value)
+	AudioManager.play_sfx("collect_cd")
+	_spawn_float_text(pos, "+%s" % GameConfig.format_number(value))
+
+func _spawn_float_text(pos: Vector2, text: String) -> void:
+	var lbl := Label.new()
+	lbl.text = text
+	lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	lbl.add_theme_font_size_override("font_size", 22)
+	lbl.add_theme_color_override("font_color", Color(1, 0.92, 0.3, 1))
+	lbl.add_theme_color_override("font_outline_color", Color(0, 0, 0, 1))
+	lbl.add_theme_constant_override("outline_size", 4)
+	lbl.position = pos - Vector2(30, 20)
+	tap_area.add_child(lbl)
+	var tween := create_tween()
+	tween.set_parallel(true)
+	tween.tween_property(lbl, "position:y", lbl.position.y - 60, 0.7).set_ease(Tween.EASE_OUT)
+	tween.tween_property(lbl, "modulate:a", 0.0, 0.7).set_delay(0.3)
+	tween.chain().tween_callback(lbl.queue_free)
 
 func _on_screen_requested(screen_name: String) -> void:
 	SceneRouter.go_to(screen_name)

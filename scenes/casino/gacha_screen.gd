@@ -42,6 +42,7 @@ func _on_single_pull() -> void:
 	_clear_results()
 	var prize := GachaData.pull()
 	var msg := GachaData.apply_prize(prize)
+	AudioManager.play_sfx("gacha_reveal")
 	_show_result(prize, msg)
 	_update_display()
 

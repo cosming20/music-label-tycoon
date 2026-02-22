@@ -13,7 +13,7 @@ var _tier: int = ArtistData.ArtistTier.BUSKER
 @onready var count_label: Label = %CountLabel
 @onready var buy_button: Button = %BuyButton
 @onready var upgrade_button: Button = %UpgradeButton
-@onready var icon_rect: ColorRect = %IconRect
+@onready var icon_rect: TextureRect = %IconRect
 @onready var lock_overlay: ColorRect = %LockOverlay
 
 func setup(tier: int) -> void:
@@ -40,7 +40,7 @@ func _update_display() -> void:
 	var level := GameManager.get_artist_level(_tier)
 
 	name_label.text = data["name"]
-	icon_rect.color = data["color"]
+	icon_rect.texture = load(data["sprite"])
 
 	if not unlocked:
 		lock_overlay.visible = true

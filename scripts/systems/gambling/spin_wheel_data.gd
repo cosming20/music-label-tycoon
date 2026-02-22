@@ -13,12 +13,12 @@ enum PrizeType {
 }
 
 const PRIZES: Array = [
-	{"type": PrizeType.CDS_SMALL, "label": "50 CDs", "weight": 30, "color": Color.DIM_GRAY},
-	{"type": PrizeType.CDS_MEDIUM, "label": "200 CDs", "weight": 20, "color": Color.SILVER},
-	{"type": PrizeType.CDS_LARGE, "label": "1000 CDs", "weight": 5, "color": Color.GOLD},
-	{"type": PrizeType.BOOST_2X, "label": "2x Boost", "weight": 15, "color": Color.ORANGE},
-	{"type": PrizeType.PREMIUM_SMALL, "label": "5 Gems", "weight": 5, "color": Color.MEDIUM_PURPLE},
-	{"type": PrizeType.NOTHING, "label": "Try Again", "weight": 25, "color": Color.DARK_GRAY},
+	{"type": PrizeType.CDS_SMALL, "label": "50 CDs", "weight": 30, "color": Color.DIM_GRAY, "sprite": "res://assets/sprites/casino/prize_cd_stack.png"},
+	{"type": PrizeType.CDS_MEDIUM, "label": "200 CDs", "weight": 20, "color": Color.SILVER, "sprite": "res://assets/sprites/casino/prize_cd_stack.png"},
+	{"type": PrizeType.CDS_LARGE, "label": "1000 CDs", "weight": 5, "color": Color.GOLD, "sprite": "res://assets/sprites/casino/prize_cd_stack.png"},
+	{"type": PrizeType.BOOST_2X, "label": "2x Boost", "weight": 15, "color": Color.ORANGE, "sprite": "res://assets/sprites/casino/prize_boost_lightning.png"},
+	{"type": PrizeType.PREMIUM_SMALL, "label": "5 Gems", "weight": 5, "color": Color.MEDIUM_PURPLE, "sprite": "res://assets/sprites/casino/prize_gem.png"},
+	{"type": PrizeType.NOTHING, "label": "Try Again", "weight": 25, "color": Color.DARK_GRAY, "sprite": "res://assets/sprites/casino/prize_empty.png"},
 ]
 
 static func pick_prize() -> Dictionary:

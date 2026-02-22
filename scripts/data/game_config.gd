@@ -7,7 +7,7 @@ extends RefCounted
 const CD_SPAWN_INTERVAL := 1.2  # Seconds between CD spawns
 const CD_LIFETIME := 4.0  # Seconds before a CD despawns if not tapped
 const CD_MAX_ON_SCREEN := 12  # Maximum CDs visible at once
-const CD_SPAWN_AREA_MARGIN := 40  # Pixels from screen edge
+const CD_SPAWN_AREA_MARGIN := 60  # Pixels from screen edge
 
 ## Idle / Offline
 const OFFLINE_EARNINGS_MAX_HOURS := 8.0  # Cap offline earnings at 8 hours

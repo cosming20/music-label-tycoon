@@ -15,7 +15,8 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  GODOT_VERSION: "4.4"
+  GODOT_VERSION: "4.6.1"
+  GODOT_RELEASE: "stable"
 
 jobs:
   export-and-deploy:
@@ -23,31 +24,29 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    container:
-      image: barichello/godot-ci:4.4
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup export templates
+      - name: Install Godot
         run: |
-          # barichello/godot-ci stores templates under /root but GH Actions HOME is /github/home
-          mkdir -p $HOME/.local/share/godot/export_templates/
-          # Link wherever the templates actually exist
-          if [ -d "/root/.local/share/godot/export_templates/${GODOT_VERSION}.stable" ]; then
-            ln -sf /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable $HOME/.local/share/godot/export_templates/${GODOT_VERSION}.stable
-          elif [ -d "/root/.local/share/godot/export_templates/${GODOT_VERSION}.stable.mono" ]; then
-            ln -sf /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable.mono $HOME/.local/share/godot/export_templates/${GODOT_VERSION}.stable
-          else
-            echo "Available template dirs:"
-            ls -la /root/.local/share/godot/export_templates/ 2>/dev/null || echo "No templates at /root"
-            ls -la $HOME/.local/share/godot/export_templates/ 2>/dev/null || echo "No templates at HOME"
-            # Try finding templates anywhere
-            find / -name "web_*release*" -type f 2>/dev/null | head -5
-            exit 1
-          fi
-          echo "Templates linked:"
-          ls -la $HOME/.local/share/godot/export_templates/${GODOT_VERSION}.stable/web* 2>/dev/null || echo "No web templates found"
+          wget -q https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-${GODOT_RELEASE}/Godot_v${GODOT_VERSION}-${GODOT_RELEASE}_linux.x86_64.zip
+          wget -q https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-${GODOT_RELEASE}/Godot_v${GODOT_VERSION}-${GODOT_RELEASE}_export_templates.tpz
+          unzip -q Godot_v${GODOT_VERSION}-${GODOT_RELEASE}_linux.x86_64.zip
+          sudo mv Godot_v${GODOT_VERSION}-${GODOT_RELEASE}_linux.x86_64 /usr/local/bin/godot
+          sudo chmod +x /usr/local/bin/godot
+
+      - name: Install export templates
+        run: |
+          mkdir -p $HOME/.local/share/godot/export_templates/${GODOT_VERSION}.${GODOT_RELEASE}
+          unzip -q Godot_v${GODOT_VERSION}-${GODOT_RELEASE}_export_templates.tpz
+          mv templates/* $HOME/.local/share/godot/export_templates/${GODOT_VERSION}.${GODOT_RELEASE}/
+          ls $HOME/.local/share/godot/export_templates/${GODOT_VERSION}.${GODOT_RELEASE}/web* || echo "Available templates:" && ls $HOME/.local/share/godot/export_templates/${GODOT_VERSION}.${GODOT_RELEASE}/
+
+      - name: Import project
+        run: |
+          godot --headless --import 2>&1 || true
+          sleep 2
 
       - name: Export to Web
         run: |
@@ -57,7 +56,6 @@ jobs:
       - name: Add coi-serviceworker for SharedArrayBuffer
         run: |
           wget -q https://raw.githubusercontent.com/nicemicro/godot-export-web-github-pages/main/coi-serviceworker.min.js -O build/web/coi-serviceworker.min.js || true
-          # Insert coi-serviceworker script tag into index.html for cross-origin isolation
           sed -i 's|<head>|<head><script src="coi-serviceworker.min.js"></script>|' build/web/index.html || true
 
       - name: Upload artifact

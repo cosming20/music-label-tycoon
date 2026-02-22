@@ -31,8 +31,23 @@ jobs:
 
       - name: Setup export templates
         run: |
-          mkdir -p /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable
-          mv /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable.mono /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable 2>/dev/null || true
+          # barichello/godot-ci stores templates under /root but GH Actions HOME is /github/home
+          mkdir -p $HOME/.local/share/godot/export_templates/
+          # Link wherever the templates actually exist
+          if [ -d "/root/.local/share/godot/export_templates/${GODOT_VERSION}.stable" ]; then
+            ln -sf /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable $HOME/.local/share/godot/export_templates/${GODOT_VERSION}.stable
+          elif [ -d "/root/.local/share/godot/export_templates/${GODOT_VERSION}.stable.mono" ]; then
+            ln -sf /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable.mono $HOME/.local/share/godot/export_templates/${GODOT_VERSION}.stable
+          else
+            echo "Available template dirs:"
+            ls -la /root/.local/share/godot/export_templates/ 2>/dev/null || echo "No templates at /root"
+            ls -la $HOME/.local/share/godot/export_templates/ 2>/dev/null || echo "No templates at HOME"
+            # Try finding templates anywhere
+            find / -name "web_*release*" -type f 2>/dev/null | head -5
+            exit 1
+          fi
+          echo "Templates linked:"
+          ls -la $HOME/.local/share/godot/export_templates/${GODOT_VERSION}.stable/web* 2>/dev/null || echo "No web templates found"
 
       - name: Export to Web
         run: |

@@ -24,10 +24,11 @@ func _update_display() -> void:
 		boost_button.disabled = false
 
 func _on_boost_pressed() -> void:
-	# TODO: Replace with actual AdMob rewarded ad call
-	# For now, simulate watching an ad
+	AdManager.rewarded_ad_completed.connect(_on_ad_reward, CONNECT_ONE_SHOT)
+	AdManager.show_rewarded_ad()
+
+func _on_ad_reward() -> void:
 	GameManager.activate_boost(GameConfig.AD_BOOST_MULTIPLIER, GameConfig.AD_BOOST_DURATION)
-	status_label.text = "Boost activated!"
 
 func _on_screen_requested(screen_name: String) -> void:
 	SceneRouter.go_to(screen_name)

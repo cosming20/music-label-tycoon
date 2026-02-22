@@ -8,7 +8,15 @@ const AUTO_SAVE_INTERVAL := 30.0
 var _auto_save_timer: float = 0.0
 
 func _ready() -> void:
-	print("SaveManager loaded")
+	# Save when app goes to background (Android)
+	get_tree().auto_accept_quit = false
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_WM_GO_BACK_REQUEST:
+		save_game()
+		get_tree().quit()
+	elif what == NOTIFICATION_APPLICATION_FOCUS_OUT:
+		save_game()
 
 func _process(delta: float) -> void:
 	_auto_save_timer += delta
@@ -17,33 +25,31 @@ func _process(delta: float) -> void:
 		save_game()
 
 func save_game() -> void:
-	var save_data := {
-		"cds": GameManager.cds,
-		"total_cds_earned": GameManager.total_cds_earned,
-		"artists_owned": GameManager.artists_owned,
-		"artist_levels": GameManager.artist_levels,
-		"studio_upgrades": GameManager.studio_upgrades,
-		"timestamp": Time.get_unix_time_from_system(),
-	}
+	var save_data := GameManager.to_save_data()
+	var json_string := JSON.stringify(save_data, "\t")
 	var file := FileAccess.open(SAVE_PATH, FileAccess.WRITE)
 	if file:
-		file.store_string(JSON.stringify(save_data))
+		file.store_string(json_string)
 
-func load_game() -> bool:
+func load_game() -> void:
 	if not FileAccess.file_exists(SAVE_PATH):
-		return false
+		return
 	var file := FileAccess.open(SAVE_PATH, FileAccess.READ)
 	if not file:
-		return false
+		return
 	var json := JSON.new()
 	var result := json.parse(file.get_as_text())
 	if result != OK:
-		return false
+		push_warning("SaveManager: Failed to parse save file")
+		return
 	var data: Dictionary = json.data
-	GameManager.cds = data.get("cds", 0.0)
-	GameManager.total_cds_earned = data.get("total_cds_earned", 0.0)
-	GameManager.artists_owned = data.get("artists_owned", {})
-	GameManager.artist_levels = data.get("artist_levels", {})
-	GameManager.studio_upgrades = data.get("studio_upgrades", {})
-	GameManager.last_save_timestamp = data.get("timestamp", 0.0)
-	return true
+	GameManager.load_save_data(data)
+
+	# Calculate and apply offline earnings
+	var offline_cds := GameManager.calculate_offline_earnings()
+	if offline_cds > 0:
+		GameManager.add_cds(offline_cds)
+
+func delete_save() -> void:
+	if FileAccess.file_exists(SAVE_PATH):
+		DirAccess.remove_absolute(SAVE_PATH)

@@ -4,10 +4,14 @@ extends Node
 
 var _bgm_player: AudioStreamPlayer
 var _sfx_players: Array[AudioStreamPlayer] = []
-const MAX_SFX_PLAYERS := 8
+const MAX_SFX_PLAYERS := 4
 
 ## Preloaded SFX
 var _sfx_cache: Dictionary = {}
+
+## Cooldown tracking — prevents the same SFX from stacking
+var _sfx_last_played: Dictionary = {}
+const SFX_MIN_INTERVAL := 0.08  # Minimum seconds between same SFX
 
 ## BGM tracks
 const BGM_TRACKS: Dictionary = {
@@ -73,16 +77,32 @@ func stop_bgm() -> void:
 	_bgm_player.stop()
 	_current_bgm_key = ""
 
-## Play a sound effect by key.
+## Play a sound effect by key. Prevents rapid stacking of the same sound.
 func play_sfx(sfx_key: String) -> void:
 	if sfx_key not in _sfx_cache:
 		return
+	# Cooldown: skip if same SFX played too recently
+	var now := Time.get_ticks_msec() / 1000.0
+	if sfx_key in _sfx_last_played:
+		if now - _sfx_last_played[sfx_key] < SFX_MIN_INTERVAL:
+			return
+	_sfx_last_played[sfx_key] = now
+
+	# Stop any player already playing this same SFX (prevent stacking)
+	for player in _sfx_players:
+		if player.playing and player.stream == _sfx_cache[sfx_key]:
+			player.stop()
+			player.stream = _sfx_cache[sfx_key]
+			player.play()
+			return
+
 	# Find an available player from the pool
 	for player in _sfx_players:
 		if not player.playing:
 			player.stream = _sfx_cache[sfx_key]
 			player.play()
 			return
-	# All busy — use first player (interrupt oldest)
+	# All busy — interrupt the first player
+	_sfx_players[0].stop()
 	_sfx_players[0].stream = _sfx_cache[sfx_key]
 	_sfx_players[0].play()

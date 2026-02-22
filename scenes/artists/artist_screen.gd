@@ -34,12 +34,4 @@ func _on_upgrade_artist(tier: int) -> void:
 	GameManager.upgrade_artist(tier)
 
 func _on_screen_requested(screen_name: String) -> void:
-	match screen_name:
-		"main":
-			get_tree().change_scene_to_file("res://scenes/main/main_screen.tscn")
-		"studio":
-			get_tree().change_scene_to_file("res://scenes/studio/studio_screen.tscn")
-		"casino":
-			get_tree().change_scene_to_file("res://scenes/casino/casino_screen.tscn")
-		"shop":
-			get_tree().change_scene_to_file("res://scenes/shop/shop_screen.tscn")
+	SceneRouter.go_to(screen_name)

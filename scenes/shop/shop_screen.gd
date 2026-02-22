@@ -30,12 +30,4 @@ func _on_boost_pressed() -> void:
 	status_label.text = "Boost activated!"
 
 func _on_screen_requested(screen_name: String) -> void:
-	match screen_name:
-		"main":
-			get_tree().change_scene_to_file("res://scenes/main/main_screen.tscn")
-		"artists":
-			get_tree().change_scene_to_file("res://scenes/artists/artist_screen.tscn")
-		"studio":
-			get_tree().change_scene_to_file("res://scenes/studio/studio_screen.tscn")
-		"casino":
-			get_tree().change_scene_to_file("res://scenes/casino/casino_screen.tscn")
+	SceneRouter.go_to(screen_name)

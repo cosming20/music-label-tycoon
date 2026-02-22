@@ -79,14 +79,4 @@ func _on_cd_collected(tier: int) -> void:
 	GameManager.add_cds(value)
 
 func _on_screen_requested(screen_name: String) -> void:
-	match screen_name:
-		"artists":
-			get_tree().change_scene_to_file("res://scenes/artists/artist_screen.tscn")
-		"studio":
-			get_tree().change_scene_to_file("res://scenes/studio/studio_screen.tscn")
-		"casino":
-			get_tree().change_scene_to_file("res://scenes/casino/casino_screen.tscn")
-		"shop":
-			get_tree().change_scene_to_file("res://scenes/shop/shop_screen.tscn")
-		"main":
-			pass  # Already here
+	SceneRouter.go_to(screen_name)

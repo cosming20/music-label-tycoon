@@ -56,4 +56,4 @@ func _on_ten_pull() -> void:
 	_update_display()
 
 func _on_screen_requested(screen_name: String) -> void:
-	get_tree().change_scene_to_file("res://scenes/casino/casino_screen.tscn")
+	SceneRouter.go_to(screen_name)
